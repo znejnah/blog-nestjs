@@ -1,0 +1,58 @@
+# services:
+#   reddit-blog-api:
+#     image: node:24
+#     ports:
+#       - 3000:3000
+#     volumes:
+#       - .:/app
+#     working_dir: /app
+#     command: "bash -c 'npm i && npm run start:dev'"
+#     environment:
+#       MONGODB_URL: mongodb://host.docker.internal:27017/redditBlog
+#     networks:
+#       - reddit-net
+#     depends_on:
+#       - rustfs
+#
+#   rustfs:
+#     image: rustfs/rustfs:1.0.0-alpha.99
+#     container_name: rustfs-server
+#     ports:
+#       - 9000:9000
+#       - 9001:9001
+#     volumes:
+#       - ./rust_data:/data
+#     working_dir: /app
+#     environment:
+#       RUSTFS_ENDPOINT: http://localhost:9001
+#       RUSTFS_ACCESS_KEY: admin
+#       RUSTFS_SECRET_KEY: Password123*
+#       RUSTFS_CONSOLE_ENABLE: true
+#       RUSTFS_PORT: 9001
+#       RUSTFS_BUCKET_NAME: my-reddit-blog
+#     networks:
+#       - reddit-net
+#
+# networks:
+#   reddit-net:
+#     driver: bridge
+
+services:
+  blog-api:
+    image: node:24
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: "bash -c 'npm i && npm run start:dev'"
+    environment:
+      MONGODB_URL: mongodb://global-mongo:27017/blog
+
+      RUSTFS_ENDPOINT: http://rustfs_service:9000
+    networks:
+      - global_infra_network
+
+networks:
+  global_infra_network:
+    external: true

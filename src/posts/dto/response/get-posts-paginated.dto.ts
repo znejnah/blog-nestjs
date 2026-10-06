@@ -1,4 +1,4 @@
-import { PaginationDto } from '../../../_utils/dto/responses/pagination.dts';
+import { PaginationDto } from '../../../_utils/dto/responses/pagination.dto';
 import { GetPostsLightDto } from './get-posts-light.dto';
 import { PaginatedQueryDto } from '../../../_utils/dto/requests/paginated-query.dto';
 

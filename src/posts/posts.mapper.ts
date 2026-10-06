@@ -22,7 +22,7 @@ export class PostsMapper {
     private storageService: StorageService,
     private storageClientMapper: StorageClientMapper,
   ) {}
-  toGetPostDto(post: PostDocument): GetPostDto {
+  async toGetPostDto(post: PostDocument): Promise<GetPostDto> {
     if (post.category instanceof Types.ObjectId)
       throw new InternalServerErrorException(
         "Category doesn't exist | not populated!",
@@ -38,11 +38,7 @@ export class PostsMapper {
       title: post.title,
       description: post.description,
       postImageUrl: post.postImage?.filename
-        ? StorageClientMapper.createUrlImage(
-            post.author.id,
-            this.configService.get('RUSTFS_ENDPOINT'),
-            this.configService.get('RUSTFS_BUCKET_NAME'),
-          )
+        ? await this.storageService.getPresignedUrl(post.postImage.key)
         : null,
       author: this.usersMapper.toGetUserDto(post.author),
       category: this.categoryMapper.toGetCategoryLightDto(post.category),

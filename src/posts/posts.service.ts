@@ -29,7 +29,9 @@ export class PostsService {
   async findAllPosts() {
     return this.postsRepository
       .findAllPosts()
-      .then((posts) => posts.map((post) => post));
+      .then((posts) =>
+        Promise.all(posts.map((post) => this.postsMapper.toGetPostDto(post))),
+      );
   }
 
   async findOnePostAndTranslate(postId: string, lang: string) {
@@ -106,5 +108,9 @@ export class PostsService {
 
   async deletePostsByCategoryId(id: string) {
     return this.postsRepository.deleteMany(id);
+  }
+
+  async deletePostsByUserId(id: string) {
+    return this.postsRepository.deleteManyByUserId(id);
   }
 }

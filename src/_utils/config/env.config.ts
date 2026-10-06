@@ -1,7 +1,7 @@
-import { IsNumber, IsOptional, IsString, validateSync } from 'class-validator';
-import { exit } from 'process';
 import { Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { IsNumber, IsString, validateSync } from 'class-validator';
+import { exit } from 'process';
 
 export class EnvironmentVariables {
   @IsString()
@@ -23,23 +23,28 @@ export class EnvironmentVariables {
   PORT: number;
 
   @IsString()
-  RUSTFS_ENDPOINT: string;
+  S3_INTERNAL_ENDPOINT: string;
 
-  @IsOptional()
+  @IsString()
+  S3_PUBLIC_ENDPOINT: string;
+
   @IsNumber()
-  RUSTFS_PORT?: number;
+  S3_PORT: number;
 
   @IsString()
-  RUSTFS_ACCESS_KEY: string;
+  S3_ACCESS_KEY: string;
 
   @IsString()
-  RUSTFS_SECRET_KEY: string;
+  S3_SECRET_KEY: string;
 
   @IsString()
-  RUSTFS_BUCKET_NAME: string;
+  S3_BUCKET_NAME: string;
 
   @IsString()
-  RUSTFS_REGION: string;
+  S3_REGION: string;
+
+  @IsNumber()
+  S3_PRESIGNED_URL_EXPIRATION: number;
 
   @IsNumber()
   UPLOAD_MAX_FILES: number;

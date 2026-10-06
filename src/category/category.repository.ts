@@ -99,9 +99,7 @@ export class CategoryRepository {
   async delete(id: string) {
     await this.categoryModel
       .findByIdAndDelete(id)
-      .orFail(this.notFoundException);
+      .orFail(this.notFoundException)
+      .exec();
   }
-  // async delete() {
-  //   return this.categoryModel.deleteMany().exec();
-  // }
 }
