@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePostDto } from './dto/request/create-post.dto';
-import { UpdatePostDto } from './dto/request/update-post.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Post, PostDocument } from './schemas/post.schema';
 import { Model, QueryFilter, Types } from 'mongoose';
-import { PostsPaginatedQueryDto } from './dto/request/posts-paginated-query.dto';
+import { S3File } from '../storage/schemas/s3-file.schema';
 import { StorageClientMapper } from '../storage/storage-client.mapper';
 import { StorageService } from '../storage/storage.service';
-import { S3File } from '../storage/schemas/s3-file.schema';
+import { CreatePostDto } from './dto/request/create-post.dto';
+import { PostsPaginatedQueryDto } from './dto/request/posts-paginated-query.dto';
+import { UpdatePostDto } from './dto/request/update-post.dto';
+import { Post, PostDocument } from './schemas/post.schema';
 
 @Injectable()
 export class PostsRepository {
@@ -21,30 +21,25 @@ export class PostsRepository {
     authorId: string,
     createPostDto: CreatePostDto,
   ) {
-    console.log(categoryId);
-    console.log(createPostDto);
-
     let imageKey;
-    let imageUrl: S3File | undefined;
+    let image: S3File | undefined;
 
     if (createPostDto.postImage) {
       imageKey = StorageClientMapper.getImageKey(
         authorId,
         createPostDto.postImage,
       );
-      console.log('image key', imageKey);
-      imageUrl = await this.storageService.uploadFile(
+      image = await this.storageService.uploadFile(
         imageKey,
         createPostDto.postImage,
       );
-
-      console.log(imageUrl);
     }
+
     const createdPost = new this.postModel({
       category: new Types.ObjectId(categoryId),
       title: createPostDto.title,
       description: createPostDto.description,
-      postImage: imageUrl,
+      postImage: image,
       author: new Types.ObjectId(authorId),
     });
     await createdPost.populate(['category', 'author']);
@@ -125,5 +120,9 @@ export class PostsRepository {
 
   async deleteMany(id: string) {
     await this.postModel.deleteMany({ category: id });
+  }
+
+  async deleteManyByUserId(userId: string) {
+    await this.postModel.deleteMany({ author: userId });
   }
 }

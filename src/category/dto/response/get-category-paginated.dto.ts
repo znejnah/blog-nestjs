@@ -1,6 +1,6 @@
 import { GetCategoryLightDto } from './get-category-light.dto';
 import { PaginatedQueryDto } from '../../../_utils/dto/requests/paginated-query.dto';
-import { PaginationDto } from '../../../_utils/dto/responses/pagination.dts';
+import { PaginationDto } from '../../../_utils/dto/responses/pagination.dto';
 
 export class GetCategoryPaginatedDto extends PaginationDto {
   categories: GetCategoryLightDto[];
